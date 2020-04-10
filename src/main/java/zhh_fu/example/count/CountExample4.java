@@ -1,4 +1,4 @@
-package zhh_fu.example.atomic;
+package zhh_fu.example.count;
 
 import lombok.extern.slf4j.Slf4j;
 import zhh_fu.annotations.SafeThread;
@@ -7,18 +7,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @SafeThread
-public class AtomicExample2 {
+public class CountExample4 {
     //请求总数
-    public static int clientTotal = 2000;
+    public static int clientTotal = 5000;
     //同时执行并发的线程数
     public static int threadTotal = 200;
-    public static AtomicLong count = new AtomicLong(0);
+    public static volatile int count = 0;
 
     public static void main(String[] args) throws Exception {
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -39,12 +36,10 @@ public class AtomicExample2 {
         }
         countDownLatch.await();
         executorService.shutdown();
-        log.info("count:{}" ,count.get());
+        log.info("count:{}" ,count);
     }
 
     private static void add(){
-
-        count.incrementAndGet();
-        //count.getAndIncrement();
+        count++;
     }
 }
