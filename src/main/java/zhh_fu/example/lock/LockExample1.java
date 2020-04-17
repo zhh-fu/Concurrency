@@ -1,23 +1,25 @@
-package zhh_fu.example.count;
+package zhh_fu.example.lock;
 
 import lombok.extern.slf4j.Slf4j;
 import zhh_fu.annotations.SafeThread;
-
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @SafeThread
-public class CountExample2 {
+public class LockExample1 {
     //请求总数
     public static int clientTotal = 5000;
     //同时执行并发的线程数
     public static int threadTotal = 200;
-    public static AtomicInteger count = new AtomicInteger(0);
+    private static int count = 0;
+    private final  static Lock lock = new ReentrantLock();
 
     public static void main(String[] args) throws Exception {
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -42,8 +44,11 @@ public class CountExample2 {
     }
 
     private static void add(){
-
-        count.incrementAndGet();
-        //count.getAndIncrement();
+        lock.lock();
+        try {
+            count++;
+        } finally {
+            lock.unlock();
+        }
     }
 }
